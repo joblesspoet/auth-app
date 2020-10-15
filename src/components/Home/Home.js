@@ -21,7 +21,7 @@ function Home() {
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
-                <button className="App-link" onClick={moveToLogin}>Login</button>                
+                <button className="App-link" as="Link" onClick={moveToLogin}>Login</button>                
                 <Link className="App-link" to="/auth/reset-password" >Register</Link>
             </header>
         </div>

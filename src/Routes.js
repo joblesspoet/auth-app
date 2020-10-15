@@ -10,19 +10,24 @@ import ResetPassword from './components/Auth/ResetPassword/ResetPassword';
 import Signup from './components/Auth/Signup/Signup';
 import PageNotFound from './components/404/PageNotFound';
 import Home from './components/Home/Home';
+import {useSelector} from 'react-redux'
 
 function Routes() {
+  const isAuth = useSelector(state => state.auth.is_logged_in);
+
     return (
         <Router>
             <Switch>
-                <Route exact path="/" component={Home} />
+                <Route exact path="/" component={Login} />
                 <Route exact path="/auth/login" component={Login} />
                 <Route exact path="/auth/register" component={Signup} />
                 {/* <Route exact path="/auth/reset-password" component={ResetPassword} /> */}
-                <PrivateRoute path="/auth/reset-password" component={ResetPassword} />
-                <Route isAuth path="*">
+                <PrivateRoute path="/auth/reset-password" component={ResetPassword} />                
+                <PrivateRoute isAuth={isAuth} path="/dashboard" component={Home} />
+
+                <Route path="*">
                     <PageNotFound />
-                </Route>
+                </Route>   
             </Switch>   
         </Router>
     )
