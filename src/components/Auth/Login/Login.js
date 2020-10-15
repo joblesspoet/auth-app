@@ -28,6 +28,12 @@ function Login() {
     return resetInputFields();
    }, [isAuth])
 
+   useEffect(()=>{
+    if(isAuth) {
+        history.replace('/dashboard')
+    }
+   })
+
    const handleLoginAction = () => {       
         dispatch(allActions.authActions.setUser({name: 'Ghulam Rasool', 'id': 1, email: email}));            
         history.push('/dashboard');

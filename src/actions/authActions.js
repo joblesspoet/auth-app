@@ -7,7 +7,7 @@ const setUser = (userObj) => {
 
 const logOut = () => {
     return {
-        type: "LOG_OUT"
+        type: "LOGOUT_SUCCESS"
     }
 }
 

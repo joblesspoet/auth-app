@@ -13,14 +13,14 @@ function Home() {
     
 
     const moveToLogin = () => {
-        dispatch(allActions.authActions.setUser({name: 'Ghulam Rasool', 'id': 1, email: 'sanglavi@hotmail.com'}));
-        history.push('/auth/login');
+        dispatch(allActions.authActions.logOut());
+        history.replace('/auth/login');
     }
     return (
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
-                <button className="App-link" as="Link" onClick={moveToLogin}>Login</button>                
+                <button className="App-link" as="Link" onClick={moveToLogin}>Logout</button>                
                 <Link className="App-link" to="/auth/reset-password" >Register</Link>
             </header>
         </div>
