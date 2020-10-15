@@ -2,16 +2,15 @@ import React from 'react'
 import logo from '../../logo.svg';
 import '../../App.css';
 import {Link} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import  allActions  from '../../actions/index';
 import { useHistory } from "react-router-dom";
 
 function Home() {
-    const auth = useSelector(state => state.auth);
+    // const auth = useSelector(state => state.auth);
     const history = useHistory();
     const dispatch = useDispatch();
-
-    console.log(auth);
+    
 
     const moveToLogin = () => {
         dispatch(allActions.authActions.setUser({name: 'Ghulam Rasool', 'id': 1, email: 'sanglavi@hotmail.com'}));

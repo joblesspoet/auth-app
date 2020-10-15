@@ -20,9 +20,9 @@ function Routes() {
             <Switch>
                 <Route exact path="/" component={Login} />
                 <Route exact path="/auth/login" component={Login} />
-                <Route exact path="/auth/register" component={Signup} />
-                {/* <Route exact path="/auth/reset-password" component={ResetPassword} /> */}
-                <PrivateRoute path="/auth/reset-password" component={ResetPassword} />                
+                <Route exact path="/auth/register" component={Signup} />                
+                <Route path="/auth/reset-password" component={ResetPassword} />
+                
                 <PrivateRoute isAuth={isAuth} path="/dashboard" component={Home} />
 
                 <Route path="*">
