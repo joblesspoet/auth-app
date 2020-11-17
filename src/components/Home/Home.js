@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import {useDispatch} from 'react-redux'
 import  allActions  from '../../actions/index';
 import { useHistory } from "react-router-dom";
+import firebase from 'firebase';
 
 function Home() {
     // const auth = useSelector(state => state.auth);
@@ -13,8 +14,11 @@ function Home() {
     
 
     const moveToLogin = () => {
-        dispatch(allActions.authActions.logOut());
-        history.replace('/auth/login');
+        firebase.auth().signOut().then(resp => {
+            console.log(resp)
+            dispatch(allActions.authActions.logOut());
+            history.replace('/auth/login');
+        }, error => console.log(error));
     }
     return (
         <div className="App">

@@ -5,6 +5,13 @@ const setUser = (userObj) => {
     }
 }
 
+const loginError = (error) => {
+    return {
+        type: "LOGIN_FAILURE",
+        payload: error
+    }
+}
+
 const logOut = () => {
     return {
         type: "LOGOUT_SUCCESS"
@@ -13,5 +20,6 @@ const logOut = () => {
 
 export default {
     setUser,
-    logOut
+    logOut,
+    loginError
 }

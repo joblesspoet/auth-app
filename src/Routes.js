@@ -11,10 +11,10 @@ import Signup from './components/Auth/Signup/Signup';
 import PageNotFound from './components/404/PageNotFound';
 import Home from './components/Home/Home';
 import {useSelector} from 'react-redux'
+import firebase from 'firebase';
 
 function Routes() {
   const isAuth = useSelector(state => state.auth.is_logged_in);
-
     return (
         <Router>
             <Switch>
