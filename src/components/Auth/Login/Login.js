@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import {useSelector, useDispatch} from 'react-redux'
 import  allActions  from '../../../actions/index';
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {firebase_auth} from '../../../helpers/helpers';
+import {commonHelper} from '../../../helpers/common';
 
 function Login() {
     const history = useHistory();
@@ -12,6 +13,8 @@ function Login() {
     const objUser = useSelector(state => state.auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    // commonHelper.redirectIfLoggedIn(isAuth);
 
    const handleInputChange = (event) => {    
     if(event.target.name === 'email') {
@@ -81,7 +84,7 @@ function Login() {
                     </Segment>
                 </Form>
                 <Message>
-                    New to us? <a href='#'>Sign Up</a>
+                    New to us? <Link to="/auth/register" as="link">Sign Up</Link>
                 </Message>
             </Grid.Column>
         </Grid>

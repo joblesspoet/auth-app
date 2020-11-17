@@ -18,9 +18,6 @@ function Routes() {
   return (
         <Router>
             <Switch>
-                <PublicRoute path="/">
-                  <Login />
-                </PublicRoute>
                 <PublicRoute path="/auth/login">
                   <Login />
                 </PublicRoute>
@@ -30,10 +27,6 @@ function Routes() {
                 <PublicRoute path="/auth/reset-password">
                   <ResetPassword />
                 </PublicRoute>
-                <PublicRoute path="/dashboard">
-                  <Home />
-                </PublicRoute>
-
                 <PrivateRoute isAuth={isAuth} path="/dashboard" component={Home} />
                 <Route path="*">
                     <PageNotFound />
