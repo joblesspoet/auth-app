@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import { Button, Form, Grid, Header, Image, Label, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import {useSelector, useDispatch} from 'react-redux'
 import  allActions  from '../../../actions/index';
 import { useHistory } from "react-router-dom";
-import firebase from 'firebase';
+import {firebase_auth} from '../../../helpers/helpers';
 
 function Login() {
     const history = useHistory();
@@ -24,69 +24,65 @@ function Login() {
    useEffect(() => {
     const resetInputFields = () => {
         setEmail('');
-        setPassword('');
-        console.log(isAuth)        
+        setPassword('');                
     }
-    return resetInputFields();
+    resetInputFields();
    }, [isAuth])
-
-   useEffect(()=>{
-    if(isAuth) {
-        history.replace('/dashboard')
-    }
-      
-   })
+   
+  
 
    const handleLoginAction = async () => {
-       const resp = 
-       await firebase.auth().signInWithEmailAndPassword(email,password)
+        console.log('called')
+        
+       firebase_auth.signInWithEmailAndPassword(email,password)
        .then(resp => {
         console.log(resp.user);
-        dispatch(allActions.authActions.setUser({...resp.user}));            
+        
+        dispatch(allActions.authActions.setUser({name: resp.user.name, id: resp.user.uid, email: resp.user.email, providerData: resp.user.providerData}));            
         history.push('/dashboard');
-       }, error => dispatch(allActions.authActions.loginError(error.message)));   
-       
+       }, error => dispatch(allActions.authActions.loginError(error.message)));       
    }
 
     return (
         <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as='h2' color='teal' textAlign='center'>
-                <Image src={require("../../../assets/logo.png")} /> Log-in to your account
-            </Header>
-            <Form size='large'>
-                {
-                    (objUser && objUser?.hasError) && (
-                        <Message>
-                            <Message.Header>Ops Error....!</Message.Header>
-                            <p>
-                                {objUser.lastError}
-                            </p>
-                        </Message>
-                    )
-                }
-                
-                <Segment stacked>
-                    <Form.Input fluid icon='user' name="email" iconPosition='left' onChange={handleInputChange} value={email} placeholder='E-mail address' />
-                    <Form.Input
-                        fluid
-                        value={password}
-                        icon='lock'
-                        name="password"
-                        iconPosition='left'
-                        placeholder='Password'
-                        type='password'
-                        onChange={handleInputChange}
-                    />
+                <Header as='h2' color='teal' textAlign='center'>
+                    <Image src={require("../../../assets/logo.png")} /> Log-in to your account
+                </Header>
+                <Form size='large'>
+                    {
+                        (objUser && objUser?.hasError) && (
+                            <Message>
+                                <Message.Header>Ops Error....!</Message.Header>
+                                <p>
+                                    {objUser.lastError}
+                                </p>
+                            </Message>
+                        )
+                    }
+                    
+                    <Segment stacked>
+                        <Form.Input fluid icon='user' name="email" iconPosition='left' onChange={handleInputChange} 
+                        value={email} placeholder='E-mail address' />
+                        <Form.Input
+                            fluid
+                            value={password}
+                            icon='lock'
+                            name="password"
+                            iconPosition='left'
+                            placeholder='Password'
+                            type='password'
+                            onChange={handleInputChange}
+                        />
 
-                    <Button color='teal' onClick={handleLoginAction} fluid size='large'>
-                        Login
-                    </Button>
-                </Segment>
-            </Form>
-            <Message>
-                New to us? <a href='#'>Sign Up</a>
-            </Message>
+                        <Button color='teal' onClick={handleLoginAction} fluid size='large'>
+                            Login
+                        </Button>
+                    </Segment>
+                </Form>
+                <Message>
+                    New to us? <a href='#'>Sign Up</a>
+                </Message>
             </Grid.Column>
         </Grid>
     )

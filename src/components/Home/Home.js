@@ -15,7 +15,7 @@ function Home() {
 
     const moveToLogin = () => {
         firebase.auth().signOut().then(resp => {
-            console.log(resp)
+            // console.log(resp)
             dispatch(allActions.authActions.logOut());
             history.replace('/auth/login');
         }, error => console.log(error));
@@ -25,7 +25,7 @@ function Home() {
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <button className="App-link" as="Link" onClick={moveToLogin}>Logout</button>                
-                <Link className="App-link" to="/auth/reset-password" >Register</Link>
+                <Link className="App-link" to="/auth/register" >Register</Link>
             </header>
         </div>
     )
