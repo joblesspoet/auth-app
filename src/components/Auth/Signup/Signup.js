@@ -15,27 +15,82 @@ function Signup() {
 
     const validateForm = () => {
         let fieldsError = {};
+        let errorCount = 0;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
         if(name === ""){
             fieldsError.name = {
-                    content: 'Name Field is Required',
-                    pointing: 'below'
-                }
-            
+                content: 'Name Field is Required',
+                pointing: 'below'
+            }
+
+            errorCount++;
         }
-        console.log(fieldsError)
-        if(fieldsError.length > 0) {
+
+        if(email === ""){
+            fieldsError.email = {
+                content: 'Email field is Required',
+                pointing: 'below'
+            }
+            errorCount++;
+        }else if (!regex.test(email)) {
+            fieldsError.email = {
+                content: 'Invalid email address',
+                pointing: 'below'
+            }
+
+            errorCount++;
+        }
+
+        if(password === ""){
+            fieldsError.password = {
+                content: 'Password field is Required',
+                pointing: 'below'
+            }
+            errorCount++;
+        }else if (password.length < 6) {
+            fieldsError.password = {
+                content: 'Minimum password 6 digit required.',
+                pointing: 'below'
+            }
+            errorCount++;
+        }
+
+        if(confirm_password === ""){
+            fieldsError.confirm_password = {
+                content: 'Confirm Password field is Required',
+                pointing: 'below'
+            }
+            errorCount++;
+        }else if (confirm_password.length < 6) {
+            fieldsError.confirm_password = {
+                content: 'Minimum confirm password 6 digit required.',
+                pointing: 'below'
+            }
+            errorCount++;
+        }
+
+        if(password !== confirm_password) {
+            fieldsError.confirm_password = {
+                content: 'Password and confirm password should match.',
+                pointing: 'below'
+            }
+            errorCount++;
+        }
+
+        if(errorCount > 0) {
+            console.log(fieldsError)
             setErrors(fieldsError);
             return false            
         }
-        else return true;
+        else {
+            setErrors({});
+            return true
+        };
     }
     
     const handleSignupAction = async () => {
-        console.log('hi')
         validateForm();
     }
-
-    console.log(formErrors)
     return (
         <Grid centered style={{ height: '100vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 550 }}>
@@ -43,12 +98,13 @@ function Signup() {
                     <Image src={require("../../../assets/logo.png")} /> Create a New Account
                 </Header>
                 <Form size='large'>
-                    <Field name="Name" placeholder="Enter your name" changeValue={(e)=> setName(e)} value={name} error={formErrors.name} />
-                    <Field name="Email" placeholder="Enter your email address" changeValue={(e)=> setEmail(e)} value={email} />
-                    <Field name="Password" type="password" placeholder="Enter your password" changeValue={(e)=> setPassword(e)} value={password} />
-                    <Field name="Confirm Password" type="password" placeholder="Confirm password" changeValue={(e)=> setConfirmPassword(e)} value={confirm_password} />
+                    <Field id='form-input-control-error-name' name="Name" placeholder="Enter your name" changeValue={(e)=> setName(e)} value={name} 
+                    error={formErrors.name} />
+                    <Field id='form-input-control-error-email' name="Email" placeholder="Enter your email address" changeValue={(e)=> setEmail(e)} error={formErrors.email} value={email} />
+                    <Field id='form-input-control-error-password' name="Password" type="password" placeholder="Enter your password" changeValue={(e)=> setPassword(e)}  error={formErrors.password} value={password} />
+                    <Field id='form-input-control-error-confirm_password' name="Confirm Password" type="password" placeholder="Confirm password" changeValue={(e)=> setConfirmPassword(e)}  error={formErrors.confirm_password} value={confirm_password} />
                     <Form.Field>
-                        <Checkbox value={terms_condition} onChange={() => setTerms(!terms_condition)} label='I agree to the Terms and Conditions' />
+                        <Checkbox onChange={() => setTerms(!terms_condition)} label='I agree to the Terms and Conditions' />
                     </Form.Field>
                     
                     <Button color='teal' onClick={handleSignupAction} >

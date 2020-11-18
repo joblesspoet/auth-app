@@ -6,9 +6,11 @@ function Field(props) {
         props.changeValue(e);
     }
     return (
-        <Form.Field>
-            <label>{props.name}</label>
-            <Input {...props} onChange={(e)=> updateFieldValue(e.target.value)} />                        
+        <Form.Field label={props.name}
+            control={Input}
+            {...props}
+            onChange={(e)=> updateFieldValue(e.target.value)}
+        >                    
         </Form.Field>
     );
 }
