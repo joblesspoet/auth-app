@@ -4,7 +4,10 @@ import {useSelector, useDispatch} from 'react-redux'
 import  allActions  from '../../../actions/index';
 import { Link, useHistory } from "react-router-dom";
 import {firebase_auth} from '../../../helpers/helpers';
-import {commonHelper} from '../../../helpers/common';
+// import {commonHelper} from '../../../helpers/common';
+
+
+
 
 function Login() {
     const history = useHistory();
@@ -15,7 +18,7 @@ function Login() {
     const [password, setPassword] = useState('');
 
     // commonHelper.redirectIfLoggedIn(isAuth);
-
+    const formError = checkIfErrorExits(objUser);
    const handleInputChange = (event) => {    
     if(event.target.name === 'email') {
         setEmail(event.target.value)
@@ -42,7 +45,7 @@ function Login() {
         console.log(resp.user);
         
         dispatch(allActions.authActions.setUser({name: resp.user.name, id: resp.user.uid, email: resp.user.email, providerData: resp.user.providerData}));            
-        history.push('/dashboard');
+        history.replace('/dashboard');
        }, error => dispatch(allActions.authActions.loginError(error.message)));       
    }
 
@@ -53,17 +56,7 @@ function Login() {
                     <Image src={require("../../../assets/logo.png")} /> Log-in to your account
                 </Header>
                 <Form size='large'>
-                    {
-                        (objUser && objUser?.hasError) && (
-                            <Message>
-                                <Message.Header>Ops Error....!</Message.Header>
-                                <p>
-                                    {objUser.lastError}
-                                </p>
-                            </Message>
-                        )
-                    }
-                    
+                    {formError}
                     <Segment stacked>
                         <Form.Input fluid icon='user' name="email" iconPosition='left' onChange={handleInputChange} 
                         value={email} placeholder='E-mail address' />
@@ -89,6 +82,17 @@ function Login() {
             </Grid.Column>
         </Grid>
     )
+}
+
+function checkIfErrorExits(props){    
+    return  ( (props && props?.hasError) && (
+            <Message>
+                <Message.Header>Ops Error....!</Message.Header>
+                <p>
+                    {props.lastError}
+                </p>
+            </Message>
+        ))    
 }
 
 export default Login

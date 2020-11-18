@@ -18,16 +18,19 @@ function Routes() {
   return (
         <Router>
             <Switch>
-                <PublicRoute path="/auth/login">
-                  <Login />
-                </PublicRoute>
-                <PublicRoute path="/auth/register">
-                  <Signup />
-                </PublicRoute>
-                <PublicRoute path="/auth/reset-password">
-                  <ResetPassword />
-                </PublicRoute>
-                <PrivateRoute isAuth={isAuth} path="/dashboard" component={Home} />
+                  <PrivateRoute isAuth={isAuth} extact path="/dashboard" component={Home} />
+                  <PublicRoute path="/" exact={true}>
+                    <Login />
+                  </PublicRoute>    
+                  <PublicRoute path="/auth/login" exact={true}>
+                    <Login />
+                  </PublicRoute>
+                  <PublicRoute path="/auth/register" exact={true}>
+                    <Signup />
+                  </PublicRoute>
+                  <PublicRoute path="/auth/reset-password" exact={true}>
+                    <ResetPassword />
+                  </PublicRoute>
                 <Route path="*">
                     <PageNotFound />
                 </Route>   
@@ -36,7 +39,7 @@ function Routes() {
     )
 }
 
-function PrivateRoute({ component: Component, ...rest }) {
+function PrivateRoute({ component: Component, ...rest }) {  
     return (<Route {...rest} render={ props => (    
         rest.isAuth === true ? (
           <Component {...props} />
@@ -52,15 +55,15 @@ function PrivateRoute({ component: Component, ...rest }) {
 
 const PublicRoute = ({ children, ...rest }) => {
   const isLogged = useSelector(state => state.auth.is_logged_in);
-
+  if (isLogged) {
+      return <Redirect to="/dashboard" />;
+  }
+  console.log(rest)
   return (
       <Route
+        exact
           {...rest}
-          render={() => {
-              if (isLogged) {
-                  return <Redirect to="/dashboard" />;
-              }
-
+          render={() => {             
               return children;
           }}
       />
