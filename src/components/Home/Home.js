@@ -5,7 +5,7 @@ import  allActions  from '../../actions/index';
 import { useHistory } from "react-router-dom";
 import {useDispatch,useSelector} from 'react-redux'
 import API_INSTANCE from '../../config/connection';
-
+import Device from '../Device/Device';
 function Home() {
     const auth = useSelector(state => state.auth);
     const history = useHistory();
@@ -30,7 +30,6 @@ function Home() {
     },[])
     
     const logoutUser = async () => {
-        console.log(auth.access_token);
         
         await API_INSTANCE        
         .post('/logout')
@@ -45,6 +44,10 @@ function Home() {
             console.log(error)
         })        
     }
+
+    const handleDeviceClickEvent = (item) => {
+        console.log(item)
+    }
     
     return (
         <div className="App">
@@ -54,6 +57,14 @@ function Home() {
             </header>
             <div className="container">
                 {/* show devices listing here */}
+                <div class="row" centered>
+                    <h1 class="sub-category">Devices</h1>
+                    {
+                        devices.map(item => {
+                            return (<Device key={item.id} {...item} deviceClick={handleDeviceClickEvent} />)
+                        })
+                    }
+                </div>
             </div>
         </div>
     )

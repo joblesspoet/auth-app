@@ -62,6 +62,7 @@ function Login() {
         .then(resp => {
             console.log(resp)
             dispatch(allActions.authActions.loginSuccess({user: resp.data.user, access_token: resp.data.access_token}));
+            
             history.replace('/dashboard');        
         })
         .catch(error => {
