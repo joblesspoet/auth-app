@@ -13,12 +13,12 @@ import Home from './components/Home/Home';
 import {useSelector} from 'react-redux'
 
 function Routes() {
-  const isAuth = useSelector(state => state.auth.is_logged_in);
+  const isAuth = useSelector(state => state.auth.is_logged_in) || false;
   
   return (
         <Router>
             <Switch>
-                  <PrivateRoute isAuth={isAuth} extact path="/dashboard" component={Home} />
+                  <PrivateRoute isAuth={isAuth} path="/dashboard" component={Home} />
                   <PublicRoute path="/" exact={true}>
                     <Login />
                   </PublicRoute>    
@@ -57,8 +57,7 @@ const PublicRoute = ({ children, ...rest }) => {
   const isLogged = useSelector(state => state.auth.is_logged_in);
   if (isLogged) {
       return <Redirect to="/dashboard" />;
-  }
-  console.log(rest)
+  }  
   return (
       <Route
         exact

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { Button, Form, Grid, Header, Image, Input, Message, Segment } from 'semantic-ui-react'
 import {useSelector, useDispatch} from 'react-redux'
 import  allActions  from '../../../actions/index';
-import { Link, Redirect, useHistory } from "react-router-dom";
+import {  useHistory } from "react-router-dom";
 // import {firebase_auth} from '../../../helpers/helpers';
 // import {commonHelper} from '../../../helpers/common';
 import API_INSTANCE from '../../../config/connection';
@@ -16,7 +16,7 @@ function Login() {
     const objUser = useSelector(state => state.auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [formErrors, setErrors] = useState([]);    
+    const [formErrors, setErrors] = useState({});    
     const formError = checkIfErrorExits(objUser);
 
     const handleInputChange = (event) => {    
@@ -35,6 +35,15 @@ function Login() {
     resetInputFields();
    }, [isAuth])
    
+   useEffect(() => {
+    
+    return function cleanup() {
+        setErrors({});
+        setEmail('');
+        setPassword('');         
+    };
+    // eslint-disable-next-line
+  }, []);
   
 
    const handleLoginAction = async () => {
@@ -50,8 +59,9 @@ function Login() {
    const doUserLogin = async (uemail,upassword) => {
 
         await API_INSTANCE.post('/auth/login',{email: uemail, password: upassword})
-        .then(resp => {                        
-            dispatch(allActions.authActions.setUser(resp));
+        .then(resp => {
+            console.log(resp)
+            dispatch(allActions.authActions.loginSuccess({user: resp.data.user, access_token: resp.data.access_token}));
             history.replace('/dashboard');        
         })
         .catch(error => {
@@ -129,10 +139,7 @@ function Login() {
                             Login
                         </Button>
                     </Segment>
-                </Form>
-                <Message>
-                    New to us? <Link to="/auth/register" as="link">Sign Up</Link>
-                </Message>
+                </Form>                
             </Grid.Column>
         </Grid>
     )

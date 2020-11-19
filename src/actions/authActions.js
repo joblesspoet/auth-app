@@ -5,6 +5,13 @@ const setUser = (userObj) => {
     }
 }
 
+const loginSuccess = (loginObj) => {
+    return {
+        type: "LOGIN_SUCCESS",
+        payload: loginObj
+    }
+}
+
 const loginRequest = () => {
     return {
         type: "LOGIN_REQUEST"        
@@ -24,9 +31,17 @@ const logOut = () => {
     }
 }
 
+const resetAuthValues = () => {
+    return {
+        type: "RESET_AUTH_STATE"
+    }
+}
+
 export default {
     setUser,
     loginRequest,
     logOut,
-    loginError
+    loginError,
+    loginSuccess,
+    resetAuthValues
 }

@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Form, Grid, Header, Image, Checkbox } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Image } from 'semantic-ui-react'
 import Field from '../../common/Field';
-import {firebase_auth} from '../../../helpers/helpers';
-import {useSelector, useDispatch} from 'react-redux'
+// import {useDispatch} from 'react-redux'
+// import API_INSTANCE from '../../../config/connection';
 
 function Signup() {
 
-    const dispatch = useDispatch();    
+    // const dispatch = useDispatch();    
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -103,34 +103,37 @@ function Signup() {
         e.preventDefault();
         if(validateForm()){
             setRegStatus(true);
-            firebase_auth.createUserWithEmailAndPassword(email, password)
-                .then(resp => {
-                    console.log(resp);
-                    setEmail('');
-                    setConfirmPassword('')
-                    setName('');
-                    setPassword('')
-                    setErrors({});
-                    setTerms(false);
-                    setRegStatus(false);
+            // API_INSTANCE.post('/auth/register',{
+            //     name: name, email: email, password: password, 
+            // })
+            // firebase_auth.createUserWithEmailAndPassword(email, password)
+            //     .then(resp => {
+            //         console.log(resp);
+            //         setEmail('');
+            //         setConfirmPassword('')
+            //         setName('');
+            //         setPassword('')
+            //         setErrors({});
+            //         setTerms(false);
+            //         setRegStatus(false);
                     
-                    alert('You account has been created successfully.');
-                })
-                .catch(function(error) {
-                // Handle Errors here.
-                setRegStatus(false);
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode === 'auth/weak-password') {
-                    setErrors({password:{
-                        content: 'Week password used',
-                        pointing: 'below'
-                    }})
-                } else {
-                    alert(errorMessage);
-                }
-                console.log(error);
-            });
+            //         alert('You account has been created successfully.');
+            //     })
+            //     .catch(function(error) {
+            //     // Handle Errors here.
+            //     setRegStatus(false);
+            //     var errorCode = error.code;
+            //     var errorMessage = error.message;
+            //     if (errorCode === 'auth/weak-password') {
+            //         setErrors({password:{
+            //             content: 'Week password used',
+            //             pointing: 'below'
+            //         }})
+            //     } else {
+            //         alert(errorMessage);
+            //     }
+            //     console.log(error);
+            // });
         }
 
     }

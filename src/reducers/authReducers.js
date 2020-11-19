@@ -1,6 +1,7 @@
 
 const initialState = {
     user: {},
+    access_token: null,
     is_logged_in: false,
     is_loading: false,
     lastError: undefined,
@@ -40,7 +41,8 @@ const currentUser = (state = initialState, action) => {
             hasError: false,
             lastError: undefined,
             is_logged_in: true,
-            user: action.user
+            user: action.payload.user,
+            access_token: action.payload.access_token
         }
     
         case "LOGOUT":
@@ -58,8 +60,19 @@ const currentUser = (state = initialState, action) => {
         }    
         
         case "LOGOUT_SUCCESS":
-          return state;
-                
+          return {
+            ...state,
+            is_loading: false,
+            hasError: false,
+            lastError: undefined,
+            is_logged_in: false,
+            user: null,
+            access_token: null
+        };
+        
+        case "RESET_AUTH_STATE":
+          return initialState;
+
         default:
           return state;
       }
