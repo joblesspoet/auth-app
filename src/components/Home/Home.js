@@ -1,18 +1,33 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import logo from '../../logo.svg';
 import '../../App.css';
 import {Link} from 'react-router-dom';
-import {useDispatch} from 'react-redux'
 import  allActions  from '../../actions/index';
 import { useHistory } from "react-router-dom";
-import {firebase_auth} from '../../helpers/helpers';
+import {firebase_auth,firestore} from '../../helpers/helpers';
+import {useSelector, useDispatch} from 'react-redux'
 
 function Home() {
     // const auth = useSelector(state => state.auth);
     const history = useHistory();
     const dispatch = useDispatch();
-    
+    const [devices, setDevices] = useState([]);
 
+    useEffect(() => {
+        const getAllDevices = () => {
+            let tempDevices = [];
+            firestore.collection('devices').get().then(data => {
+                data.forEach((doc) => {
+                    // console.log(`${doc.id} and name of device is ${JSON.stringify(doc.data())}`);
+                    tempDevices.push({id: doc.id, data: doc.data()});
+                })
+                setDevices(tempDevices)
+            })
+        }
+       return getAllDevices(); 
+    },[])
+
+    console.log(devices);
     const moveToLogin = () => {
         firebase_auth.signOut().then(resp => {
             // console.log(resp)
@@ -27,6 +42,9 @@ function Home() {
                 <button className="App-link" as="Link" onClick={moveToLogin}>Logout</button>                
                 <Link className="App-link" to="/auth/register" >Register</Link>
             </header>
+            <div className="container">
+
+            </div>
         </div>
     )
 }
