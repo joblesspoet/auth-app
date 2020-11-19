@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Image, Input, Message, Segment } from 'semantic-ui-react'
 import {useSelector, useDispatch} from 'react-redux'
 import  allActions  from '../../../actions/index';
-import { Link, useHistory } from "react-router-dom";
-import {firebase_auth} from '../../../helpers/helpers';
+import { Link, Redirect, useHistory } from "react-router-dom";
+// import {firebase_auth} from '../../../helpers/helpers';
 // import {commonHelper} from '../../../helpers/common';
-
+import API_INSTANCE from '../../../config/connection';
 
 
 
@@ -16,21 +16,21 @@ function Login() {
     const objUser = useSelector(state => state.auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    // commonHelper.redirectIfLoggedIn(isAuth);
+    const [formErrors, setErrors] = useState([]);    
     const formError = checkIfErrorExits(objUser);
-   const handleInputChange = (event) => {    
-    if(event.target.name === 'email') {
-        setEmail(event.target.value)
-    } else if(event.target.name === 'password') {
-        setPassword(event.target.value)
-    }
-   }
 
+    const handleInputChange = (event) => {    
+        if(event.target.name === 'email') {
+            setEmail(event.target.value)
+        } else if(event.target.name === 'password') {
+            setPassword(event.target.value)
+        }
+    }
+    
    useEffect(() => {
     const resetInputFields = () => {
         setEmail('');
-        setPassword('');                
+        setPassword('');        
     }
     resetInputFields();
    }, [isAuth])
@@ -39,14 +39,54 @@ function Login() {
 
    const handleLoginAction = async () => {
         console.log('called')
+        await doUserLogin(email,password);    
+   }
+
+   /**
+    * 
+    * @param {string} uemail | user email address
+    * @param {string} upassword | user password
+    */
+   const doUserLogin = async (uemail,upassword) => {
+
+        await API_INSTANCE.post('/auth/login',{email: uemail, password: upassword})
+        .then(resp => {                        
+            dispatch(allActions.authActions.setUser(resp));
+            history.replace('/dashboard');        
+        })
+        .catch(error => {
+            // validation error
+            if(error?.response.status === 422){
+                handleServerRespError(error?.response?.data.errors);
+                dispatch(allActions.authActions.loginError(error?.response?.data.message))
+            }else {
+                dispatch(allActions.authActions.loginError(error?.message))
+            }
+        })
+   }
+
+   /**
+    * 
+    * @param {array} errors object array
+    */
+   const handleServerRespError = (errors) => {
+        let tempError = {};
         
-       firebase_auth.signInWithEmailAndPassword(email,password)
-       .then(resp => {
-        console.log(resp.user);
-        
-        dispatch(allActions.authActions.setUser({name: resp.user.name, id: resp.user.uid, email: resp.user.email, providerData: resp.user.providerData}));            
-        history.replace('/dashboard');
-       }, error => dispatch(allActions.authActions.loginError(error.message)));       
+        if(errors?.email){
+            tempError.email = {
+                content: errors.email[0],
+                pointing: 'below'
+            };
+        }
+
+        if(errors?.password){
+            tempError.password= {
+                content: errors.password[0],
+                pointing: 'below'
+            };
+        }        
+        setErrors(tempError);
+        tempError = [];    
    }
 
     return (
@@ -58,9 +98,22 @@ function Login() {
                 <Form size='large'>
                     {formError}
                     <Segment stacked>
-                        <Form.Input fluid icon='user' name="email" iconPosition='left' onChange={handleInputChange} 
-                        value={email} placeholder='E-mail address' />
-                        <Form.Input
+                        
+                        <Form.Field 
+                            id="form-input-control-error-email"
+                            control={Input} 
+                            fluid icon='user' 
+                            name="email" 
+                            iconPosition='left' 
+                            onChange={handleInputChange} 
+                            value={email} 
+                            placeholder='E-mail address'
+                            error={formErrors.email}
+                        />
+
+                        <Form.Field
+                            id="form-input-control-error-password"
+                            control={Input}
                             fluid
                             value={password}
                             icon='lock'
@@ -69,6 +122,7 @@ function Login() {
                             placeholder='Password'
                             type='password'
                             onChange={handleInputChange}
+                            error={formErrors.password}
                         />
 
                         <Button color='teal' onClick={handleLoginAction} fluid size='large'>
