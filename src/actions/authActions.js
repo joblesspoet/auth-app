@@ -1,17 +1,49 @@
+import * as actionTypes from "../constants/index";
+
 const setUser = (userObj) => {
-    return {
-        type: "SET_USER",
-        payload: userObj
-    }
-}
+  return {
+    type: actionTypes.SET_USER,
+    payload: userObj,
+  };
+};
+
+const loginSuccess = (loginObj) => {
+  return {
+    type: actionTypes.LOGIN_SUCCESS,
+    payload: loginObj,
+  };
+};
+
+const loginRequest = () => {
+  return {
+    type: actionTypes.LOGIN_REQUEST,
+  };
+};
+
+const loginError = (error) => {
+  return {
+    type: actionTypes.LOGIN_FAILURE,
+    payload: error,
+  };
+};
 
 const logOut = () => {
-    return {
-        type: "LOGOUT_SUCCESS"
-    }
-}
+  return {
+    type: actionTypes.LOGOUT_SUCCESS,
+  };
+};
+
+const resetAuthValues = () => {
+  return {
+    type: actionTypes.RESET_AUTH_STATE,
+  };
+};
 
 export default {
-    setUser,
-    logOut
-}
+  setUser,
+  loginRequest,
+  logOut,
+  loginError,
+  loginSuccess,
+  resetAuthValues,
+};
