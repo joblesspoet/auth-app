@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import API_INSTANCE from "../../config/connection";
 import Device from "../Device/Device";
 import DeviceModel from "../Device/DeviceModel";
-import Pusher from 'pusher-js';
-import pushid from 'pushid';
+import Pusher from "pusher-js";
+import pushid from "pushid";
 
 import {
   Navbar,
@@ -20,6 +20,7 @@ import {
   Card,
   Tabs,
   Tab,
+  Badge,
 } from "react-bootstrap";
 
 function Home() {
@@ -27,29 +28,29 @@ function Home() {
   const history = useHistory();
   const dispatch = useDispatch();
   // const [devices, setDevices] = useState([]);
-  const deviceObj = useSelector(state => state.device);
+  const deviceObj = useSelector((state) => state.device);
   const devices = deviceObj.devices;
   const [modalStatus, setModalStatus] = useState(false);
   const [deviceData, setDeviceData] = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
-
+  const [myRequests, setMyRequests] = useState([]);
 
   useEffect(() => {
     let pusher, channel;
     const userId = auth.user.id;
     const initializePusher = async () => {
       // const userId = auth.user.id;
-      pusher = new Pusher('3ea5ea66ea7831bc126d', {
-        cluster: 'ap2',
+      pusher = new Pusher("3ea5ea66ea7831bc126d", {
+        cluster: "ap2",
         encrypted: true,
       });
-      
-      channel = pusher.subscribe('DevicesAvailabilty');
-      
-      channel.bind("App\\Events\\DeviceAssignedEvent", data => {
+
+      channel = pusher.subscribe("DevicesAvailabilty");
+
+      channel.bind("App\\Events\\DeviceAssignedEvent", (data) => {
         dispatch(allActions.deviceActions.updateDevice(data.device));
       });
-    }
+    };
 
     async function getAllDevices() {
       await API_INSTANCE.get("/devices", {
@@ -59,19 +60,19 @@ function Home() {
       })
         .then((resp) => resp.data)
         .then((device_obj) => {
-          console.log(device_obj);
           dispatch(allActions.deviceActions.fetchDevices(device_obj.data));
         });
     }
     API_INSTANCE.defaults.headers.common[
       "Authorization"
-    ] = `Bearer ${auth.access_token}`;    
+    ] = `Bearer ${auth.access_token}`;
     getAllDevices();
     getDevicesLogs();
+    getMyRequests();
     initializePusher();
     return () => {
-      channel.unsubscribe('User.'+userId)
-    }
+      channel.unsubscribe("User." + userId);
+    };
   }, []);
 
   async function getDevicesLogs() {
@@ -82,19 +83,16 @@ function Home() {
     })
       .then((resp) => resp.data)
       .then((log_obj) => {
-        console.log(log_obj);
         setDevicesLogs(log_obj.data);
       });
   }
 
   const logoutUser = async () => {
-    await API_INSTANCE.post("/logout",'',
-    {
+    await API_INSTANCE.post("/logout", "", {
       headers: {
         Authorization: `Bearer ${auth.access_token}`,
-      }
-    }
-    )
+      },
+    })
       .then(
         (resp) => {
           console.log(resp.data);
@@ -116,13 +114,12 @@ function Home() {
   };
 
   const handleModalClose = () => {
-    console.log("hi");
     setModalStatus(false);
   };
 
   async function sendDeviceRequest(message) {
     await API_INSTANCE.post(
-      "/devices-request",
+      "/devices/request",
       { device_id: deviceData.id, request_detail: message },
       {
         headers: {
@@ -132,7 +129,6 @@ function Home() {
     )
       .then((resp) => resp.data)
       .then((result) => {
-        console.log(result);
         // setDevicesLogs(log_obj.data);
         setModalStatus(false);
       });
@@ -141,6 +137,20 @@ function Home() {
   const handleSendRequest = (message) => {
     sendDeviceRequest(message);
   };
+
+  async function getMyRequests() {
+    await API_INSTANCE.get("/devices/request", {
+      headers: {
+        Authorization: `Bearer ${auth.access_token}`,
+      },
+    })
+      .then((resp) => resp.data)
+      .then((req_obj) => {
+        console.log("req_obj");
+        console.log(req_obj);
+        setMyRequests(req_obj.data);
+      });
+  }
 
   return (
     <div className="App">
@@ -161,9 +171,9 @@ function Home() {
           </Nav>
         </Navbar>
       </header>
-      <Container className="pt-5" fluid>
+      <Container className="main-container" fluid>
         <Row>
-          <Col md={8}>
+          <Col md={8} className="devices-container">
             <Row>
               {devices.map((item) => {
                 return (
@@ -174,14 +184,18 @@ function Home() {
               })}
             </Row>
           </Col>
-          <Col md={4}>
-            <Tabs defaultActiveKey="general" id="uncontrolled-tab-example">
+          <Col md={4} className="logs-container">
+            <Tabs
+              defaultActiveKey="general"
+              id="uncontrolled-tab-example"
+              className="nav-justified"
+            >
               <Tab eventKey="general" title="General Logs">
-                {devicesLogs.map((item) => {
+                {devicesLogs.map((item, key) => {
                   return (
-                    <Card key={item.id} className="mb-2">
+                    <Card key={item.id} className="mb-2 card-box">
                       <Card.Body>
-                        <Card.Subtitle className="mb-2 text-muted">
+                        <Card.Subtitle className="mb-2">
                           {item.devices.device_name} (
                           {item.devices.device_model})
                         </Card.Subtitle>
@@ -192,15 +206,31 @@ function Home() {
                 })}
               </Tab>
               <Tab eventKey="my_requests" title="My Requests">
-                {devicesLogs.map((item) => {
+                {myRequests.map((item) => {
+                  let requestStatusClass = "warning";
+                  switch (item.request_status) {
+                    case "PENDING":
+                      requestStatusClass = "warning";
+                      break;
+                    case "PLEASE_COLLECT":
+                      requestStatusClass = "success";
+                      break;
+                    case "APPROVED":
+                      requestStatusClass = "primary";
+                      break;
+                  }
                   return (
-                    <Card key={item.id} className="mb-2">
+                    <Card key={item.id} className="mb-2 card-box">
                       <Card.Body>
                         <Card.Subtitle className="mb-2 text-muted">
-                          {item.devices.device_name} (
-                          {item.devices.device_model})
+                          {item.device.device_name} ({item.device.device_model})
                         </Card.Subtitle>
-                        <Card.Text>{item.log_detail}</Card.Text>
+                        <Card.Text className="mb-0">
+                          {item.request_detail}
+                        </Card.Text>
+                        <Badge variant={requestStatusClass}>
+                          {item.request_status}
+                        </Badge>
                       </Card.Body>
                     </Card>
                   );
