@@ -3,9 +3,11 @@ import {
 } from 'redux';
 
 import authReduicer from './authReducers';
+import deviceReducers from './deviceReducers';
 
 const appReducer = combineReducers({
     auth: authReduicer,
+    device: deviceReducers
 })
 
 const rootReducer = (state, action) => {

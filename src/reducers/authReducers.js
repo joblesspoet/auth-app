@@ -9,7 +9,7 @@ const initialState = {
   hasError: false,
 };
 
-const currentUser = (state = initialState, action) => {
+const authReduicer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN_REQUEST:
       return {
@@ -79,4 +79,4 @@ const currentUser = (state = initialState, action) => {
   }
 };
 
-export default currentUser;
+export default authReduicer;

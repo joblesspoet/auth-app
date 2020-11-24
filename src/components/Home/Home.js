@@ -26,28 +26,31 @@ function Home() {
   const auth = useSelector((state) => state.auth);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [devices, setDevices] = useState([]);
+  // const [devices, setDevices] = useState([]);
+  const deviceObj = useSelector(state => state.device);
+  const devices = deviceObj.devices;
   const [modalStatus, setModalStatus] = useState(false);
   const [deviceData, setDeviceData] = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
 
 
   useEffect(() => {
-    let pusher;
-    const initializePusher = () => {
+    let pusher, channel;
+    const userId = auth.user.id;
+    const initializePusher = async () => {
+      // const userId = auth.user.id;
       pusher = new Pusher('3ea5ea66ea7831bc126d', {
         cluster: 'ap2',
         encrypted: true,
       });
-
-      const channel = pusher.subscribe('User.'.auth.user.id);
-      console.log(channel);
-      channel.bind('DeviceAssignedEvent', data => {
-        this.setState({
-          newsItems: [...data.articles, ...this.state.newsItems],
-        });
+      
+      channel = pusher.subscribe('DevicesAvailabilty');
+      
+      channel.bind("App\\Events\\DeviceAssignedEvent", data => {
+        dispatch(allActions.deviceActions.updateDevice(data.device));
       });
     }
+
     async function getAllDevices() {
       await API_INSTANCE.get("/devices", {
         headers: {
@@ -57,15 +60,18 @@ function Home() {
         .then((resp) => resp.data)
         .then((device_obj) => {
           console.log(device_obj);
-          setDevices(device_obj.data);
+          dispatch(allActions.deviceActions.fetchDevices(device_obj.data));
         });
     }
     API_INSTANCE.defaults.headers.common[
       "Authorization"
-    ] = `Bearer ${auth.access_token}`;
-    initializePusher();
+    ] = `Bearer ${auth.access_token}`;    
     getAllDevices();
     getDevicesLogs();
+    initializePusher();
+    return () => {
+      channel.unsubscribe('User.'+userId)
+    }
   }, []);
 
   async function getDevicesLogs() {
@@ -82,7 +88,13 @@ function Home() {
   }
 
   const logoutUser = async () => {
-    await API_INSTANCE.post("/logout")
+    await API_INSTANCE.post("/logout",'',
+    {
+      headers: {
+        Authorization: `Bearer ${auth.access_token}`,
+      }
+    }
+    )
       .then(
         (resp) => {
           console.log(resp.data);

@@ -56,8 +56,7 @@ function Login() {
   const handleLoginAction = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const form = event.currentTarget;
-
+    
     setValidated(true);
 
     await doUserLogin(email, password);
@@ -174,56 +173,11 @@ function Login() {
           </Card>
         </Col>
       </Row>
-    </Container>
-    // <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
-    //   <Grid.Column style={{ maxWidth: 450 }}>
-    //     <Header as="h2" color="teal" textAlign="center">
-    //       <Image src={require("../../../assets/logo.png")} /> Log-in to your
-    //       account
-    //     </Header>
-    //     <Form size="large">
-    //       {formError}
-    //       <Segment stacked>
-    //         <Form.Field
-    //           id="form-input-control-error-email"
-    //           control={Input}
-    //           fluid
-    //           icon="user"
-    //           name="email"
-    //           iconPosition="left"
-    //           onChange={handleInputChange}
-    //           value={email}
-    //           placeholder="E-mail address"
-    //           error={formErrors.email}
-    //         />
-
-    //         <Form.Field
-    //           id="form-input-control-error-password"
-    //           control={Input}
-    //           fluid
-    //           value={password}
-    //           icon="lock"
-    //           name="password"
-    //           iconPosition="left"
-    //           placeholder="Password"
-    //           type="password"
-    //           onChange={handleInputChange}
-    //           error={formErrors.password}
-    //         />
-
-    //         <Button color="teal" onClick={handleLoginAction} fluid size="large">
-    //           Login
-    //         </Button>
-    //       </Segment>
-    //     </Form>
-    //   </Grid.Column>
-    // </Grid>
+    </Container>    
   );
 }
 
 function checkIfErrorExits(props) {
-  console.log("hi");
-  console.log(props);
   return (
     props &&
     props?.hasError && (
