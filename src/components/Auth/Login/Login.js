@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import allActions from "../../../actions/index";
 import { useHistory } from "react-router-dom";
-// import {firebase_auth} from '../../../helpers/helpers';
-// import {commonHelper} from '../../../helpers/common';
-import API_INSTANCE from "../../../config/connection";
+import {API_INSTANCE} from "../../../config/connection";
 import "./Login.scss";
 import {
   Container,
@@ -73,7 +71,6 @@ function Login() {
       password: upassword,
     })
       .then((resp) => {
-        console.log(resp);
         dispatch(
           allActions.authActions.loginSuccess({
             user: resp.data.user,
@@ -83,11 +80,11 @@ function Login() {
 
         history.replace("/dashboard");
       })
-      .catch((error) => {
+      .catch((error) => {        
         // validation error
         if (error.message === "Network Error") {
           alert("Network error detected.");
-        } else if (error?.response.status === 422) {
+        } else if (error?.response?.status === 422) {
           handleServerRespError(error?.response?.data.errors);
           dispatch(
             allActions.authActions.loginError(error?.response?.data.message)

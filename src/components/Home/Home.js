@@ -4,11 +4,10 @@ import "./Home.scss";
 import allActions from "../../actions/index";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import API_INSTANCE from "../../config/connection";
+import {API_INSTANCE} from "../../config/connection";
 import Device from "../Device/Device";
 import DeviceModel from "../Device/DeviceModel";
 import Pusher from "pusher-js";
-import pushid from "pushid";
 
 import {
   Navbar,
@@ -22,6 +21,7 @@ import {
   Tab,
   Badge,
 } from "react-bootstrap";
+import { sortArray } from "../../helpers/common";
 
 function Home() {
   const auth = useSelector((state) => state.auth);
@@ -33,7 +33,7 @@ function Home() {
   const [modalStatus, setModalStatus] = useState(false);
   const [deviceData, setDeviceData] = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
-  const [myRequests, setMyRequests] = useState([]);
+  const [myRequests, setMyRequests] = useState([]);  
 
   useEffect(() => {
     let pusher, channel;
@@ -53,19 +53,13 @@ function Home() {
     };
 
     async function getAllDevices() {
-      await API_INSTANCE.get("/devices", {
-        headers: {
-          Authorization: `Bearer ${auth.access_token}`,
-        },
-      })
-        .then((resp) => resp.data)
+      await API_INSTANCE.get("/devices")
         .then((device_obj) => {
+          console.log(device_obj)
           dispatch(allActions.deviceActions.fetchDevices(device_obj.data));
         });
     }
-    API_INSTANCE.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${auth.access_token}`;
+    
     getAllDevices();
     getDevicesLogs();
     getMyRequests();
@@ -76,39 +70,30 @@ function Home() {
   }, []);
 
   async function getDevicesLogs() {
-    await API_INSTANCE.get("/devices-logs", {
-      headers: {
-        Authorization: `Bearer ${auth.access_token}`,
-      },
-    })
-      .then((resp) => resp.data)
+    await API_INSTANCE.get("/devices-logs")
       .then((log_obj) => {
         setDevicesLogs(log_obj.data);
       });
   }
 
   const logoutUser = async () => {
-    await API_INSTANCE.post("/logout", "", {
-      headers: {
-        Authorization: `Bearer ${auth.access_token}`,
-      },
-    })
+    await API_INSTANCE.post("/logout")
       .then(
         (resp) => {
           console.log(resp.data);
           dispatch(allActions.authActions.logOut());
           history.replace("/auth/login");
-          delete API_INSTANCE.defaults.headers.common["Authorization"];
+          // delete API_INSTANCE.defaults.headers.common["Authorization"];
         },
         (error) => console.log(error)
       )
       .catch((error) => {
-        console.log("issue in logout");
         console.log(error);
       });
   };
 
   const handleDeviceClickEvent = (item) => {
+    
     setDeviceData(item);
     setModalStatus(true);
   };
@@ -120,18 +105,17 @@ function Home() {
   async function sendDeviceRequest(message) {
     await API_INSTANCE.post(
       "/devices/request",
-      { device_id: deviceData.id, request_detail: message },
-      {
-        headers: {
-          Authorization: `Bearer ${auth.access_token}`,
-        },
-      }
-    )
-      .then((resp) => resp.data)
-      .then((result) => {
-        // setDevicesLogs(log_obj.data);
+      { device_id: deviceData.id, request_detail: message }      
+    )      
+      .then((response) => {
+        console.log(response);
+        let temp_array = [...myRequests];        
+        temp_array.pop();
+        temp_array.push(response);
+        setMyRequests(sortArray(temp_array));
         setModalStatus(false);
-      });
+      }, error => console.log(error.message))
+      .catch(error => console.log("In error", error.message));
   }
 
   const handleSendRequest = (message) => {
@@ -139,18 +123,13 @@ function Home() {
   };
 
   async function getMyRequests() {
-    await API_INSTANCE.get("/devices/request", {
-      headers: {
-        Authorization: `Bearer ${auth.access_token}`,
-      },
-    })
-      .then((resp) => resp.data)
-      .then((req_obj) => {
-        console.log("req_obj");
-        console.log(req_obj);
+    await API_INSTANCE.get("/devices/request")
+      .then((req_obj) => {   
+        // console.log(req_obj.data)     
         setMyRequests(req_obj.data);
       });
   }
+
 
   return (
     <div className="App">
@@ -208,6 +187,7 @@ function Home() {
               <Tab eventKey="my_requests" title="My Requests">
                 {myRequests.map((item) => {
                   let requestStatusClass = "warning";
+                  // eslint-disable-next-line default-case
                   switch (item.request_status) {
                     case "PENDING":
                       requestStatusClass = "warning";

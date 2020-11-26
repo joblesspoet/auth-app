@@ -8,3 +8,7 @@ export const commonHelper = {
         }
     }
 };
+
+export const sortArray = (array_object) => {
+    return array_object.sort((a, b) => (a.id > b.id ? -1 : 1))
+}
