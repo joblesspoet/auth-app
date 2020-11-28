@@ -73,8 +73,8 @@ function Login() {
       .then((resp) => {
         dispatch(
           allActions.authActions.loginSuccess({
-            user: resp.data.user,
-            access_token: resp.data.access_token,
+            user: resp.user,
+            access_token: resp.access_token,
           })
         );
 

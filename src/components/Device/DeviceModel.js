@@ -8,6 +8,7 @@ function DeviceModel(props) {
   const handleValidation = () => {
     if (message.length > 0) {
       props.sendRequest(message);
+      setError('');
     } else {
       setError("Please enter some detail");
     }

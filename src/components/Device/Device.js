@@ -36,30 +36,12 @@ function Device(props) {
           <Card.Text className="text-success">
             <b>{props.status}</b>
           </Card.Text>
-          <Button variant="primary" className="w-100" onClick={handleClick}>
+          <Button variant="primary" disabled={props.status !== 'AVAILABLE'} className="w-100" onClick={handleClick}>
             Request Device
           </Button>
         </Card.Body>
       </Card>
     </div>
-
-    // <Segment>
-    //     <div class="ui four cards" onClick={handleClick}>
-    //         <div class="card">
-    //             <div class="image">
-    //                 <Image centered src={props.device_picture} />
-    //             </div>
-    //             <div class="extra">
-    //                 <p class="product-name">{props.device_name}</p>
-    //                 <p>{props.device_model}</p>
-    //                 <p class="product-price"><i class="tag icon"></i><strong>{props.status}</strong></p>
-    //             </div>
-    //         </div>
-    //     </div>
-    //     <DeviceModel id="modal-open" open={modal} device={props}
-    //     bookingSucces={bookingText}
-    //     modalHandle={closeModal} modalConfirmBooking={handleConfirmBooking} />
-    // </Segment>
   );
 }
 

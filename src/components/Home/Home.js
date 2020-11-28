@@ -24,16 +24,16 @@ import {
 import { sortArray } from "../../helpers/common";
 
 function Home() {
-  const auth = useSelector((state) => state.auth);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  // const [devices, setDevices] = useState([]);
+  const auth      = useSelector((state) => state.auth);
+  const history   = useHistory();
+  const dispatch  = useDispatch();
   const deviceObj = useSelector((state) => state.device);
-  const devices = deviceObj.devices;
+  const devices   = deviceObj.devices;
+  const [booking_status, setBookingStatus] = useState('');
   const [modalStatus, setModalStatus] = useState(false);
-  const [deviceData, setDeviceData] = useState([]);
+  const [deviceData, setDeviceData]   = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
-  const [myRequests, setMyRequests] = useState([]);  
+  const [myRequests, setMyRequests]   = useState([]);  
 
   useEffect(() => {
     let pusher, channel;
@@ -44,6 +44,12 @@ function Home() {
         cluster: "ap2",
         encrypted: true,
       });
+      const channel_user = pusher.subscribe("User."+ auth.user.id);
+
+      channel_user.subscribe("App\\Events\\CollectDeviceEvent", (data) => {
+
+        alert(JSON.stringify(data));
+      })
 
       channel = pusher.subscribe("DevicesAvailabilty");
 
@@ -157,7 +163,7 @@ function Home() {
               {devices.map((item) => {
                 return (
                   <Col xs={6} key={item.id}>
-                    <Device {...item} deviceClick={handleDeviceClickEvent} />
+                    <Device {...item} device={item} deviceClick={handleDeviceClickEvent} />
                   </Col>
                 );
               })}
@@ -224,6 +230,7 @@ function Home() {
         setShow={modalStatus}
         modalClose={handleModalClose}
         sendRequest={handleSendRequest}
+        bookingStatus={booking_status}
         {...deviceData}
       />
     </div>
