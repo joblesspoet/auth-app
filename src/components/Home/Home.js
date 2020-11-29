@@ -43,19 +43,28 @@ function Home() {
       pusher = new Pusher("3ea5ea66ea7831bc126d", {
         cluster: "ap2",
         encrypted: true,
+        // authEndpoint: '/broadcasting/auth',
+        authTransport: 'ajax',
+        auth: {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${auth.access_token}`
+            },
+            params: null
+        }
       });
-      const channel_user = pusher.subscribe("User."+ auth.user.id);
-
-      channel_user.subscribe("App\\Events\\CollectDeviceEvent", (data) => {
-
-        alert(JSON.stringify(data));
-      })
 
       channel = pusher.subscribe("DevicesAvailabilty");
 
       channel.bind("App\\Events\\DeviceAssignedEvent", (data) => {
         dispatch(allActions.deviceActions.updateDevice(data.device));
       });
+
+      let channel_user = pusher.subscribe("user."+ auth.user.id);
+      channel_user.bind("App\\Events\\CollectDeviceEvent", (data) => {
+        console.log(data)
+        // alert(JSON.stringify(data));
+      })
     };
 
     async function getAllDevices() {
