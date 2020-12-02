@@ -4,10 +4,12 @@ import {
 
 import authReduicer from './authReducers';
 import deviceReducers from './deviceReducers';
+import deviceRequestReducers from './deviceRequestReducers';
 
 const appReducer = combineReducers({
     auth: authReduicer,
-    device: deviceReducers
+    device: deviceReducers,
+    requests: deviceRequestReducers
 })
 
 const rootReducer = (state, action) => {

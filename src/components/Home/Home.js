@@ -29,14 +29,17 @@ function Home() {
   const dispatch  = useDispatch();
   const deviceObj = useSelector((state) => state.device);
   const devices   = deviceObj.devices;
+  const requestObj = useSelector(state => state.requests);
+  const myRequests = requestObj.requests;
+
   const [booking_status, setBookingStatus] = useState('');
   const [modalStatus, setModalStatus] = useState(false);
   const [deviceData, setDeviceData]   = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
-  const [myRequests, setMyRequests]   = useState([]);  
+  // const [myRequests, setMyRequests]   = useState([]);  
 
   useEffect(() => {
-    let pusher, channel;
+    let pusher, channel,channel_user,device_assignment;
     const userId = auth.user.id;
     const initializePusher = async () => {
       // const userId = auth.user.id;
@@ -55,15 +58,20 @@ function Home() {
       });
 
       channel = pusher.subscribe("DevicesAvailabilty");
-
       channel.bind("App\\Events\\DeviceAssignedEvent", (data) => {
         dispatch(allActions.deviceActions.updateDevice(data.device));
       });
 
-      let channel_user = pusher.subscribe("user."+ auth.user.id);
+      channel_user = pusher.subscribe("user."+ auth.user.id);
       channel_user.bind("App\\Events\\CollectDeviceEvent", (data) => {
-        console.log(data)
-        // alert(JSON.stringify(data));
+        console.log(data.request)
+        dispatch(allActions.requestActions.updateRequest(data.request));
+      })
+
+      device_assignment = pusher.subscribe("DevicesAssignment");
+      device_assignment.bind("App\\Events\\DeviceAssignedEvent", (data) => {
+        dispatch(allActions.deviceActions.updateDevice(data.device));
+        dispatch(allActions.requestActions.updateRequest(data.request));
       })
     };
 
@@ -80,7 +88,9 @@ function Home() {
     getMyRequests();
     initializePusher();
     return () => {
-      channel.unsubscribe("User." + userId);
+      pusher.unsubscribe("DevicesAvailabilty");
+      pusher.unsubscribe('User.'+userId);
+      pusher.unsubscribe('DevicesAssignment');
     };
   }, []);
 
@@ -125,9 +135,11 @@ function Home() {
       .then((response) => {
         console.log(response);
         let temp_array = [...myRequests];        
-        temp_array.pop();
+        if(temp_array.length >= 5) {
+          temp_array.pop();
+        }
         temp_array.push(response);
-        setMyRequests(sortArray(temp_array));
+        dispatch(allActions.requestActions.fetchRequests(sortArray(temp_array)));
         setModalStatus(false);
       }, error => console.log(error.message))
       .catch(error => console.log("In error", error.message));
@@ -141,7 +153,8 @@ function Home() {
     await API_INSTANCE.get("/devices/request")
       .then((req_obj) => {   
         // console.log(req_obj.data)     
-        setMyRequests(req_obj.data);
+        // setMyRequests(req_obj.data);
+        dispatch(allActions.requestActions.fetchRequests(req_obj.data));
       });
   }
 
