@@ -6,8 +6,7 @@ const API_INSTANCE = axios.create({
     // baseURL: "http://10.28.87.112:8001/api",
     baseURL: "http://127.0.0.1:8000/api",
     headers: {
-        'Accept': 'application/json',
-        'Accept': 'text/html'
+        'Accept': 'application/json'
     }
 });
 
