@@ -36,8 +36,7 @@ function Home() {
   const [modalStatus, setModalStatus] = useState(false);
   const [deviceData, setDeviceData]   = useState([]);
   const [devicesLogs, setDevicesLogs] = useState([]);
-  // const [myRequests, setMyRequests]   = useState([]);  
-
+  
   useEffect(() => {
     let pusher, channel,channel_user,device_assignment;
     const userId = auth.user.id;
@@ -70,6 +69,7 @@ function Home() {
 
       device_assignment = pusher.subscribe("DevicesAssignment");
       device_assignment.bind("App\\Events\\DeviceAssignedEvent", (data) => {
+        console.log(data)
         dispatch(allActions.deviceActions.updateDevice(data.device));
         dispatch(allActions.requestActions.updateRequest(data.request));
       })
@@ -78,7 +78,6 @@ function Home() {
     async function getAllDevices() {
       await API_INSTANCE.get("/devices")
         .then((device_obj) => {
-          console.log(device_obj)
           dispatch(allActions.deviceActions.fetchDevices(device_obj.data));
         });
     }
@@ -152,8 +151,6 @@ function Home() {
   async function getMyRequests() {
     await API_INSTANCE.get("/devices/request")
       .then((req_obj) => {   
-        // console.log(req_obj.data)     
-        // setMyRequests(req_obj.data);
         dispatch(allActions.requestActions.fetchRequests(req_obj.data));
       });
   }
@@ -170,7 +167,6 @@ function Home() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Link>Home</Nav.Link>
-              {/* <Nav.Link>My Requests</Nav.Link> */}
             </Nav>
           </Navbar.Collapse>
           <Nav>
