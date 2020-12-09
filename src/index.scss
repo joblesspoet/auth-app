@@ -1,13 +1,63 @@
 // Import Bootstrap and its default variables
+
+$body-bg: #1db49b;
+$theme-colors: (
+  primary: #004237,
+  secondary: #28b9a1,
+  danger: #ca2938,
+  success: #a2fff0,
+  warning: #eac554
+);
+$btn-font-weight: bold;
+$modal-content-bg: map-get($theme-colors,primary);
+$modal-content-color: white;
+$modal-content-border-width: 0;
+$input-placeholder-color: map-get($theme-colors,secondary);
+$input-color: map-get($theme-colors,secondary);   
+$input-focus-color: map-get($theme-colors,secondary);   
+
 @import '~bootstrap/scss/bootstrap.scss';
 
+
+:root{
+  --scrollbarBG: #CFD8DC;
+  --thumbBG: #90A4AE;
+}
 
 body {
   margin: 0;
   overflow:hidden;
+  color: map-get($theme-colors,primary);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.btn-secondary{
+  color: map-get($theme-colors,primary);
+}
+
+.btn-secondary.disabled, .btn-secondary:disabled {
+  color: #45d0b9;
+  background-color: #2ab19b;
+  border-color: #2ab19b;
+}
+
+.modal-footer{
+  justify-content: flex-start;
+}
+
+.form-control{
+  background: #004237;
+box-shadow: inset 7px 7px 14px #00362d, 
+            inset -7px -7px 14px #004e41;
+  border:none;
+  resize:none;
+  &:focus{
+    background: #004237;
+box-shadow: inset 7px 7px 14px #00362d, 
+            inset -7px -7px 14px #004e41;
+  }
 }

@@ -8,7 +8,7 @@ function DeviceModel(props) {
   const handleValidation = () => {
     if (message.length > 0) {
       props.sendRequest(message);
-      setError('');
+      setError("");
     } else {
       setError("Please enter some detail");
     }
@@ -33,6 +33,8 @@ function DeviceModel(props) {
           </b>
           &nbsp; Please fill in some detail and press submit.
         </Form.Label>
+        <br />
+        <br />
         <Form.Group controlId="requestDetail">
           <Form.Control
             as="textarea"

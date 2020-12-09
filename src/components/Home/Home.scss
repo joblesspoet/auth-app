@@ -1,40 +1,78 @@
-.app-logo{
-    width:80px;
-}
 .devices-container{
-    padding:20px;
-}
-.logs-container{
-    background:var(--light);
+    display:flex;
+    justify-content: center;
+    align-items: center;
     height:100vh;
-    padding:20px 0;
+    flex:1 1 auto;
+    padding: 50px;
+    > div{
+        padding:30px;
+        flex:0 1 600px;
+    }
 }
-.tab-content{
-    max-height:calc(100vh - 180px);
-    overflow:hidden;
-    overflow-y:auto;
-    padding:15px;
-    background:var(--dark);
-    .card-box{
-        background:transparent;
-        color:white;
-        border-top:none;
-        border-left:none;
-        border-right:none;
-        border-color:#505050;
-        border-radius:0;
+.App-header{
+    position:fixed;
+    top:0;
+    left:0;
+    padding:10px 20px;
+    z-index:99;
+    a{
+        color:var(--danger);
+        font-size:30px;
+    }
+}
+.main-container{
+    display:flex;
+    .logs-container{
+        flex:0 0 500px;
+        padding:25px;
+        background: #1db49b;
+box-shadow: inset 9px 9px 18px #168774, 
+            inset -9px -9px 18px #24e1c2;
+        .tab-content{
+            height:100vh;
+            overflow:hidden;
+            overflow-y:auto;
+            padding:15px 5px;
+            padding-left:0;
+            
+            &::-webkit-scrollbar {
+                width: 11px;
+            }
+            & {
+                scrollbar-width: thin;
+                scrollbar-color: var(--secondary) var(--primary);
+            }
+            &::-webkit-scrollbar-track {
+                background: var(--secondary);
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: var(--secondary) ;
+                border-radius: 6px;
+                border: 1px solid var(--primary);
+            }
+        }
+    }
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+    color: var(--success);
+    border-color:transparent;
+    background: linear-gradient(145deg, #1aa28c, #1fc1a6);
+    box-shadow: 9px 9px 18px #118c78, -9px -9px 18px #32c1a9;
+}
+.nav-item{
+    border:none;
+    font-weight:bold;
+    color:#007b67;
+    &:hover{
+        border-color:transparent !important;
     }
 }
 .nav-tabs{
-    border-bottom:none;
-    .nav-item{
-        color:var(--dark);
-        background:var(--light);
-        border:none;
-        &.active{
-            border:none;
-            background:var(--dark);
-            color:var(--light);
-        }
-    }
+    border:none;
+}
+
+.card-box{
+    background: transparent;
 }
