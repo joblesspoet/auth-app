@@ -22,6 +22,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { sortArray } from "../../helpers/common";
+import MyRequests from './MyRequests';
 
 function Home() {
   const auth = useSelector((state) => state.auth);
@@ -160,7 +161,7 @@ function Home() {
     <div className="App">
       <header className="App-header">
         <a href="javascript:void(0)" onClick={logoutUser}>
-          <i class="fas fa-power-off"></i>
+          <i className="fas fa-power-off"></i>
         </a>
       </header>
       <div className="main-container">
@@ -168,6 +169,7 @@ function Home() {
           {devices.map((item) => {
             return (
               <Device
+                key={item.id}
                 {...item}
                 device={item}
                 deviceClick={handleDeviceClickEvent}
@@ -196,36 +198,7 @@ function Home() {
               })}
             </Tab>
             <Tab eventKey="my_requests" title="My Requests">
-              {myRequests.map((item) => {
-                let requestStatusClass = "warning";
-                // eslint-disable-next-line default-case
-                switch (item.request_status) {
-                  case "PENDING":
-                    requestStatusClass = "warning";
-                    break;
-                  case "PLEASE_COLLECT":
-                    requestStatusClass = "success";
-                    break;
-                  case "APPROVED":
-                    requestStatusClass = "primary";
-                    break;
-                }
-                return (
-                  <Card key={item.id} className="mb-2 card-box">
-                    <Card.Body>
-                      <Card.Subtitle className="mb-2">
-                        {item.device.device_name} ({item.device.device_model})
-                      </Card.Subtitle>
-                      <Card.Text className="mb-0">
-                        {item.request_detail}
-                      </Card.Text>
-                      <Badge variant={requestStatusClass}>
-                        {item.request_status}
-                      </Badge>
-                    </Card.Body>
-                  </Card>
-                );
-              })}
+              <MyRequests requests={myRequests} />
             </Tab>
           </Tabs>
         </div>

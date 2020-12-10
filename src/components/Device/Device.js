@@ -26,8 +26,8 @@ function Device(props) {
           <Card.Img
             className="device-image"
             variant="top"
-            // src={props.device_picture}
-            src="https://purepng.com/public/uploads/large/smartphone-iphone-11-pro-max-silver-san.png"
+            src={props.device_picture}
+            // src="https://purepng.com/public/uploads/large/smartphone-iphone-11-pro-max-silver-san.png"
           />
         </div>
         <Card.Body>
