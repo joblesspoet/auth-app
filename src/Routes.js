@@ -41,6 +41,7 @@ function Routes() {
 }
 
 function PrivateRoute({ component: Component, ...rest }) {
+  
   return (
     <Route
       {...rest}

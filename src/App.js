@@ -10,7 +10,7 @@ function App() {
   
   useEffect(() => {
     const fire_base = async () => {
-      await API_INTERCEPTOR(store);
+    await API_INTERCEPTOR(store);
     };
 
     fire_base();

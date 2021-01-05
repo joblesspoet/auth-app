@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 import thunk from "redux-thunk";
 
 const persistConfig = {
-  key: "root",
+  key: "root:DEVICELOG",
   storage,
   whitelist: ["auth"],
 };

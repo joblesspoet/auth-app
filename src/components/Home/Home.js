@@ -3,7 +3,7 @@ import logo from "../../logo.svg";
 import "./Home.scss";
 import allActions from "../../actions/index";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, connect } from "react-redux";
 import { API_INSTANCE } from "../../config/connection";
 import Device from "../Device/Device";
 import DeviceModel from "../Device/DeviceModel";
@@ -24,7 +24,8 @@ import {
 import { sortArray } from "../../helpers/common";
 import MyRequests from './MyRequests';
 
-function Home() {
+
+function Home(props) {
   const auth = useSelector((state) => state.auth);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -99,21 +100,6 @@ function Home() {
     });
   }
 
-  const logoutUser = async () => {
-    await API_INSTANCE.post("/logout")
-      .then(
-        (resp) => {
-          console.log(resp.data);
-          dispatch(allActions.authActions.logOut());
-          history.replace("/auth/login");
-          // delete API_INSTANCE.defaults.headers.common["Authorization"];
-        },
-        (error) => console.log(error)
-      )
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   const handleDeviceClickEvent = (item) => {
     setDeviceData(item);
@@ -160,7 +146,7 @@ function Home() {
   return (
     <div className="App">
       <header className="App-header">
-        <a href="javascript:void(0)" onClick={logoutUser}>
+        <a href="javascript:void(0)" onClick={props.doUserLogout}>
           <i className="fas fa-power-off"></i>
         </a>
       </header>
@@ -214,4 +200,9 @@ function Home() {
   );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth
+    }
+}
+export default connect(mapStateToProps, {...allActions.authActions})(Home);

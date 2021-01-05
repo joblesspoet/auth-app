@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, connect } from "react-redux";
 import allActions from "../../../actions/index";
 import { useHistory } from "react-router-dom";
 import { API_INSTANCE } from "../../../config/connection";
@@ -15,7 +15,7 @@ import {
   Form,
 } from "react-bootstrap";
 
-function Login() {
+function Login(props) {
   const history = useHistory();
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.is_logged_in);
@@ -40,6 +40,10 @@ function Login() {
       setPassword("");
     };
     resetInputFields();
+    if(isAuth){
+      history.replace("/dashboard");
+    }
+    
   }, [isAuth]);
 
   useEffect(() => {
@@ -57,7 +61,7 @@ function Login() {
 
     setValidated(true);
 
-    await doUserLogin(email, password);
+    props.doUserLogin(email, password);
   };
 
   /**
@@ -65,35 +69,35 @@ function Login() {
    * @param {string} uemail | user email address
    * @param {string} upassword | user password
    */
-  const doUserLogin = async (uemail, upassword) => {
-    await API_INSTANCE.post("/auth/login", {
-      email: uemail,
-      password: upassword,
-    })
-      .then((resp) => {
-        dispatch(
-          allActions.authActions.loginSuccess({
-            user: resp.user,
-            access_token: resp.access_token,
-          })
-        );
+  // const doUserLogin = async (uemail, upassword) => {
+  //   await API_INSTANCE.post("/auth/login", {
+  //     email: uemail,
+  //     password: upassword,
+  //   })
+  //     .then((resp) => {
+  //       dispatch(
+  //         allActions.authActions.loginSuccess({
+  //           user: resp.user,
+  //           access_token: resp.access_token,
+  //         })
+  //       );
 
-        history.replace("/dashboard");
-      })
-      .catch((error) => {
-        // validation error
-        if (error.message === "Network Error") {
-          alert("Network error detected.");
-        } else if (error?.response?.status === 422) {
-          handleServerRespError(error?.response?.data.errors);
-          dispatch(
-            allActions.authActions.loginError(error?.response?.data.message)
-          );
-        } else {
-          dispatch(allActions.authActions.loginError(error?.message));
-        }
-      });
-  };
+  //       history.replace("/dashboard");
+  //     })
+  //     .catch((error) => {
+  //       // validation error
+  //       if (error.message === "Network Error") {
+  //         alert("Network error detected.");
+  //       } else if (error?.response?.status === 422) {
+  //         handleServerRespError(error?.response?.data.errors);
+  //         dispatch(
+  //           allActions.authActions.loginError(error?.response?.data.message)
+  //         );
+  //       } else {
+  //         dispatch(allActions.authActions.loginError(error?.message));
+  //       }
+  //     });
+  // };
 
   /**
    *
@@ -183,4 +187,9 @@ function checkIfErrorExits(props) {
   );
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth
+  }
+}
+export default connect(mapStateToProps, {...allActions.authActions})(Login);

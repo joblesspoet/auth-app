@@ -11,13 +11,13 @@ const initialState = {
 
 const authReduicer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN_REQUEST:
+    case actionTypes.AUTH_ACTIONS.LOGIN_REQUEST:
       return {
         ...state,
         is_loading: true,
       };
 
-    case actionTypes.LOGIN_FAILURE:
+    case actionTypes.AUTH_ACTIONS.LOGIN_FAILURE:
       return {
         ...state,
         is_loading: false,
@@ -25,7 +25,7 @@ const authReduicer = (state = initialState, action) => {
         lastError: action.payload,
       };
 
-    case actionTypes.SET_USER:
+    case actionTypes.AUTH_ACTIONS.SET_USER:
       return {
         ...state,
         is_loading: false,
@@ -35,7 +35,7 @@ const authReduicer = (state = initialState, action) => {
         user: action.payload,
       };
 
-    case actionTypes.LOGIN_SUCCESS:
+    case actionTypes.AUTH_ACTIONS.LOGIN_SUCCESS:
       return {
         ...state,
         is_loading: false,
@@ -46,13 +46,13 @@ const authReduicer = (state = initialState, action) => {
         access_token: action.payload.access_token,
       };
 
-    case actionTypes.LOGOUT:
+    case actionTypes.AUTH_ACTIONS.LOGOUT:
       return {
         ...state,
         is_loading: true,
       };
 
-    case actionTypes.LOGOUT_FAILURE:
+    case actionTypes.AUTH_ACTIONS.LOGOUT_FAILURE:
       return {
         ...state,
         hasError: true,
@@ -60,7 +60,7 @@ const authReduicer = (state = initialState, action) => {
         is_loading: false,
       };
 
-    case actionTypes.LOGOUT_SUCCESS:
+    case actionTypes.AUTH_ACTIONS.LOGOUT_SUCCESS:
       return {
         ...state,
         is_loading: false,
@@ -71,7 +71,7 @@ const authReduicer = (state = initialState, action) => {
         access_token: null,
       };
 
-    case actionTypes.RESET_AUTH_STATE:
+    case actionTypes.AUTH_ACTIONS.RESET_AUTH_STATE:
       return initialState;
 
     default:
