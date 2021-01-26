@@ -10,14 +10,14 @@ const actionRequestDevices = () => {
 
 const actionRequestDevicesSuccess = (data) => {
     return {
-        type: actionTypes.DEVICE_ACTIONS.REQUEST_DEVICES,
+        type: actionTypes.DEVICE_ACTIONS.FETCH_ALL_DEVICES_SUCCESS,
         payload: data
     };
 };
 
 const actionRequestDevicesError = (error) => {
     return {
-        type: actionTypes.DEVICE_ACTIONS.REQUEST_DEVICES,
+        type: actionTypes.DEVICE_ACTIONS.FETCH_ALL_DEVICES_ERROR,
         payload: error
     };
 };
@@ -26,9 +26,8 @@ const doGetDevices = () => {
     return async (dispatch) => {
         try {
             dispatch(actionRequestDevices());
-            await API_INSTANCE.post(API_END_POINTS.DEVICE_END_POINTS.GET_ALL, {})
+            await API_INSTANCE.get(API_END_POINTS.DEVICE_END_POINTS.GET_ALL, {})
             .then((resp) => {
-                console.log(resp)
                 dispatch(
                     actionRequestDevicesSuccess(resp.data),
                 );

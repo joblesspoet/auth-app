@@ -1,44 +1,24 @@
 
-import React, { StrictMode, useEffect, useState } from "react";
-import logo from "../../logo.svg";
+import React, { useEffect, useState } from "react";
 import "./Home.scss";
 import allActions from "../../actions/index";
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector, connect } from "react-redux";
 import { API_INSTANCE } from "../../config/connection";
 import Device from "../Device/Device";
 import DeviceModel from "../Device/DeviceModel";
 import Pusher from "pusher-js";
 
-import {
-  Navbar,
-  Nav,
-  Image,
-  Container,
-  Row,
-  Col,
+
+import {  
   Card,
   Tabs,
-  Tab,
-  Badge,
+  Tab,  
 } from "react-bootstrap";
 import { sortArray } from "../../helpers/common";
 import MyRequests from "./MyRequests";
 
 function Home(props) {
-  const auth = useSelector((state) => state.auth);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const deviceObj = useSelector((state) => state.device);
-  const devices = deviceObj.devices;
-  const requestObj = useSelector((state) => state.requests);
-  const myRequests = requestObj.requests;
-
-  const [booking_status, setBookingStatus] = useState("");
-  const [modalStatus, setModalStatus] = useState(false);
-  const [deviceData, setDeviceData] = useState([]);
-  const [devicesLogs, setDevicesLogs] = useState([]);
-
+  
   useEffect(() => {
     let pusher, channel, channel_user, device_assignment;
     const userId = auth.user.id;
@@ -77,6 +57,7 @@ function Home(props) {
       });
     };
 
+    
     props.doGetDevices();
     // getDevicesLogs();
     // getMyRequests();
@@ -87,6 +68,16 @@ function Home(props) {
       pusher.unsubscribe("DevicesAssignment");
     };
   }, []);
+
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();  
+  const devices = props.devices.devices;
+  const requestObj = useSelector((state) => state.requests);
+  const myRequests = requestObj.requests;
+  const [booking_status, setBookingStatus] = useState("");
+  const [modalStatus, setModalStatus] = useState(false);
+  const [deviceData, setDeviceData] = useState([]);
+  const [devicesLogs, setDevicesLogs] = useState([]);
 
   async function getDevicesLogs() {
     await API_INSTANCE.get("/devices-logs").then((log_obj) => {
@@ -136,17 +127,18 @@ function Home(props) {
     });
   }
 
+  
   return (
     <div className="App">
       <header className="App-header">
-        <a href="javascript:void(0)" onClick={props.doUserLogout}>
+        <a href="#" onClick={props.doUserLogout}>
           <i className="fas fa-power-off"></i>
         </a>
       </header>
       <div className="main-container">
         <div className="devices-container">
-          {devices.map((item) => {
-            return (
+          {devices.map((item) => {            
+             return(
               <Device
                 key={item.id}
                 {...item}
@@ -163,7 +155,7 @@ function Home(props) {
             className="nav-justified"
           >
             <Tab eventKey="general" title="General Logs">
-              {devicesLogs.map((item, key) => {
+              {devicesLogs.forEach((item, key) => {
                 return (
                   <Card key={item.id} className="mb-2 card-box">
                     <Card.Body>

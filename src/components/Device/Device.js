@@ -5,6 +5,7 @@ import { Card, Container, Button, Row, Col } from "react-bootstrap";
 import "./Device.scss";
 
 function Device(props) {
+  console.log(props)
   const [bookingText, setBookingText] = useState("");
 
   const handleClick = () => {

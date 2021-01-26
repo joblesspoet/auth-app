@@ -8,7 +8,6 @@ import {
 
 import Login from "./components/Auth/Login/Login";
 import ResetPassword from "./components/Auth/ResetPassword/ResetPassword";
-import Signup from "./components/Auth/Signup/Signup";
 import PageNotFound from "./components/404/PageNotFound";
 import Home from "./components/Home/Home";
 import { useSelector } from "react-redux";
@@ -25,10 +24,7 @@ function Routes() {
         </PublicRoute>
         <PublicRoute path="/auth/login" exact={true}>
           <Login />
-        </PublicRoute>
-        <PublicRoute path="/auth/register" exact={true}>
-          <Signup />
-        </PublicRoute>
+        </PublicRoute>        
         <PublicRoute path="/auth/reset-password" exact={true}>
           <ResetPassword />
         </PublicRoute>
