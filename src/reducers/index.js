@@ -8,7 +8,7 @@ import deviceRequestReducers from './deviceRequestReducers';
 
 const appReducer = combineReducers({
     auth: authReduicer,
-    device: deviceReducers,
+    devices: deviceReducers,
     requests: deviceRequestReducers
 })
 

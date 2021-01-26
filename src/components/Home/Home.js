@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { StrictMode, useEffect, useState } from "react";
 import logo from "../../logo.svg";
 import "./Home.scss";
 import allActions from "../../actions/index";
@@ -22,8 +23,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { sortArray } from "../../helpers/common";
-import MyRequests from './MyRequests';
-
+import MyRequests from "./MyRequests";
 
 function Home(props) {
   const auth = useSelector((state) => state.auth);
@@ -77,15 +77,9 @@ function Home(props) {
       });
     };
 
-    async function getAllDevices() {
-      await API_INSTANCE.get("/devices").then((device_obj) => {
-        dispatch(allActions.deviceActions.fetchDevices(device_obj.data));
-      });
-    }
-
-    getAllDevices();
-    getDevicesLogs();
-    getMyRequests();
+    props.doGetDevices();
+    // getDevicesLogs();
+    // getMyRequests();
     initializePusher();
     return () => {
       pusher.unsubscribe("DevicesAvailabilty");
@@ -99,7 +93,6 @@ function Home(props) {
       setDevicesLogs(log_obj.data);
     });
   }
-
 
   const handleDeviceClickEvent = (item) => {
     setDeviceData(item);
@@ -201,8 +194,9 @@ function Home(props) {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        auth: state.auth
-    }
-}
-export default connect(mapStateToProps, {...allActions.authActions})(Home);
+  return {
+    auth: state.auth,
+    devices: state.devices
+  };
+};
+export default connect(mapStateToProps, { ...allActions.authActions, ...allActions.deviceActions })(Home);

@@ -1,35 +1,40 @@
 import * as actionTypes from "../constants/index";
 
 const initialState = {
-    devices: [],    
-    is_loading: false,
-    lastError: undefined,
-    hasError: false,
-  };
+  devices: [],
+  lastError: null,
+  is_request: false,
+  my_requests: [],
+  logs: []
+};
 
-  const deviceReducer = (state = initialState, action) => {
-    switch(action.type){
-        
-        case actionTypes.DEVICE_ACTIONS.FETCH_ALL_DEVICES:
-            return {
-                ...state,
-                is_loading: false,
-                devices: action.payload
-            }
+const deviceReducer = (state = initialState, action) => {
+  switch (action.type) {
+    
+    case actionTypes.DEVICE_ACTIONS.REQUEST_DEVICES:
+      return {
+        ...state,
+        is_request: true,
+      };
+      
+    case actionTypes.DEVICE_ACTIONS.FETCH_ALL_DEVICES_SUCCESS:
+      return {
+        ...state,
+        is_request: false,
+        devices: action.payload,
+        lastError: null,
+      };
 
-        case actionTypes.DEVICE_ACTIONS.UPDATE_DEVICE:
-            return {
-                ...state,
-                devices: state.devices.map(
-                    (item) => item.id === action.payload.id ? { ...item,
-                        status: action.payload.status
-                    } :
-                    item)
-            }
+    case actionTypes.DEVICE_ACTIONS.FETCH_ALL_DEVICES_ERROR:
+      return {
+        ...state,
+        lastError: action.payload,
+        is_request: false,
+      };
 
-        default:
-            return state;
-    }
+    default:
+      return state;
   }
+};
 
-  export default deviceReducer;
+export default deviceReducer;

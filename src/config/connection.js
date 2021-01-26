@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import * as actionTypes from "../constants/index";
 
 const API_INSTANCE = axios.create({
-    baseURL: "http://10.28.87.112:8001/api",
+  baseURL: "http://10.28.87.112:8001/api",
   // baseURL: "http://10.28.87.112:8001/api",
   headers: {
     Accept: "application/json",
@@ -16,18 +16,21 @@ const API_INSTANCE = axios.create({
 // });
 
 export const API_END_POINTS = {
-    AUTH_END_POINTS: {
-      LOGIN: '/auth/login',
-      REGISTER: '/auth/register',
-      FORGOT_PASSWORD: '/auth/forgot-password',
-      RESET_PASSWORD: '/auth/reset-password',
-      REFRESH_TOKEN: '/refresh-token',
-      LOGOUT: '/logout',
-    },
-  };
-  
+  AUTH_END_POINTS: {
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    FORGOT_PASSWORD: "/auth/forgot-password",
+    RESET_PASSWORD: "/auth/reset-password",
+    REFRESH_TOKEN: "/refresh-token",
+    LOGOUT: "/logout",
+  },
+  DEVICE_END_POINTS: {
+    GET_ALL: "/devices",
+    ADD_REQUEST: "/devices",
+  },
+};
+
 const API_INTERCEPTOR = (store) => {
-    
   // Response interceptor for API calls
   API_INSTANCE.interceptors.request.use(
     async (conf) => {
@@ -45,18 +48,18 @@ const API_INTERCEPTOR = (store) => {
   // Response interceptor for API calls
   API_INSTANCE.interceptors.response.use(
     (response) => {
-        return response.data;
+      return response.data;
     },
     async function (error) {
-       const originalRequest = error.config;
+      const originalRequest = error.config;
       if (error.response?.status === 403 && !originalRequest._retry) {
         console.log("token expired");
         return <Redirect to="/auth/login" />;
       } else if (error.response?.status === 401 && !originalRequest._retry) {
         console.log("unauthorized");
         store.dispatch({
-            type: actionTypes.AUTH_ACTIONS.LOGOUT_SUCCESS,
-          })
+          type: actionTypes.AUTH_ACTIONS.LOGOUT_SUCCESS,
+        });
         return <Redirect to="/auth/login" />;
       }
 
